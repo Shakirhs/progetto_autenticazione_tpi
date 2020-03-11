@@ -9,15 +9,31 @@ export class CiboItem extends Component {
 		// Viene definito "destructuring"
 		const { id, cibo, calorie } = this.props.cibo
 		return (
-			<div>
+			<div style={divStyle}>
 				<p>
-					{cibo}
-					{calorie}
-					<button onClick={this.props.deleteCibo.bind(this, id)}>X</button>
+					<span style={{ marginLeft: '10px' }}>Nome: {cibo}</span>
+					<span style={{ marginLeft: '40%' }}>Calorie: {calorie} cal</span>
+					<button onClick={this.props.deleteCibo.bind(this, id)} style={btnStyle}>X</button>
 				</p>
 			</div>
 		)
 	}
+}
+
+const btnStyle = {
+	background: '#ff0000',
+	color: '#fff',
+	border: 'none',
+	padding: '5px 10px',
+	borderRadius: '50%',
+	cursor: 'pointer',
+	float: 'right'
+}
+
+const divStyle = {
+	background: '#f4f4f4',
+	padding: '8px',
+	borderBottom: '1px #ccc dotted',
 }
 
 export default CiboItem

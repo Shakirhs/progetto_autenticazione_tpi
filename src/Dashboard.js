@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import CiboItem from "./CiboItem"
+import { Redirect } from "react-router-dom";
 
 export default class Dashboard extends Component {
 
@@ -14,13 +15,15 @@ export default class Dashboard extends Component {
 		consumato: 0,
 		cibo: "",
 		calorie: 0,
-		cibi: []
+		cibi: [],
+		exit: false
 	}
 
 	componentDidMount() {
 		const token = localStorage.getItem('jwt')
 		if (!token) {
 			localStorage.clear();
+			this.setState({ exit: true })
 			return
 		}
 		fetch("https://fitness-diary--shakirhs.repl.co/api",
@@ -65,7 +68,11 @@ export default class Dashboard extends Component {
 	}
 
 	addCibo = () => {
+
 		const { cibo, calorie, cibi } = this.state
+		if (!cibo || !calorie || calorie < 0) {
+			return
+		}
 		const id = Date.now()
 		let flag = true
 		cibi.forEach(c => {
@@ -89,19 +96,36 @@ export default class Dashboard extends Component {
 
 
 	render() {
+		// if (this.state.exit) {
+		// 	return (
+		// 		<Redirect to="/login" />
+		// 	)
+		// }
 		return (
-			<div>
-				<h1>Ciao {this.state.nome} {this.state.cognome}</h1>
-				<h2>Il tuo fabbisogno giornaliero è {this.state.fabbisogno} Kcal</h2>
-				<h4>Oggi hai consumato {this.state.consumato} Kcal, ti mancano {this.state.fabbisogno - this.state.consumato} Kcal</h4>
-				<p>Inserisci cibo</p>
-				<div>
-					Nome
-					<input type="text" onChange={e => this.setState({ cibo: e.target.value })} />
+			<div style={{
+				margin: 'auto',
+				width: '100%',
+
+			}}>
+				<header style={headerStyle}><h1>Fitness Calculator</h1></header>
+				<h1 style={headingStyle}>Ciao {this.state.nome} {this.state.cognome}</h1>
+				<br />
+				<h2 style={headingStyle}>Il tuo fabbisogno giornaliero è {this.state.fabbisogno} Kcal</h2>
+				<br />
+				<h4 style={headingStyle}>Oggi hai consumato {this.state.consumato} Kcal, ti mancano {this.state.fabbisogno - this.state.consumato} Kcal</h4>
+				<br />
+				<h5 style={headingStyle}>Inserisci cibo:</h5>
+				<div style={{ textAlign: 'center' }}>
+					<span style={{ marginLeft: "0%", marginRight: "8%" }} >Nome</span>  <span style={{ marginLeft: "4%" }}>Calorie</span>
 					<br />
-					Calorie
-					<input type="number" name="calorie" id="calorie" onChange={e => this.setState({ calorie: e.target.value })} />
-					<button onClick={this.addCibo}>+</button>
+					<input style={{ flex: '10', padding: '5px' }}
+						placeholder="Aggiungi cibo..."
+						type="text" onChange={e => this.setState({ cibo: e.target.value })} />
+
+					<input
+						placeholder="Inserisci calorie"
+						style={{ flex: '5', padding: '5px' }} type="number" name="calorie" id="calorie" onChange={e => this.setState({ calorie: e.target.value })} />
+					<button style={btnStyle} onClick={this.addCibo}>+</button>
 				</div>
 				<div>
 					{this.state.cibi.map(cibo => {
@@ -113,4 +137,23 @@ export default class Dashboard extends Component {
 			</div>
 		)
 	}
+}
+
+const headerStyle = {
+	background: '#00ccff',
+	color: '#fff',
+	textAlign: 'center',
+	padding: '10px'
+}
+
+const headingStyle = {
+	margin: 'auto',
+	textAlign: 'center'
+}
+
+const btnStyle = {
+	color: '#66ccff',
+	//border: 'none',
+	padding: '5px',
+	flex: 'right'
 }
